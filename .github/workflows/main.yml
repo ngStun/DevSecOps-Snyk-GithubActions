@@ -26,14 +26,16 @@ jobs:
     - name: Dotnet restore
       run: dotnet restore
 
+    - name: Dotnet build
+      run: dotnet build --configuration Release --no-restore
+
     - name: Run Snyk to check for vulnerabilities
       continue-on-error: true
       uses: snyk/actions/dotnet@master
       env:
-         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-    - name: Dotnet build
-      run: dotnet build --configuration Release --no-restore
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --sarif-file-output=snyk.sarif --file=./WebApiWithSecurityVulnerability.Api.sln --severity-threshold=medium
 
     - name: Dotnet format
       run: dotnet format --verbosity detailed --verify-no-changes 
