@@ -27,19 +27,10 @@ jobs:
       run: dotnet restore
 
     - name: Run Snyk to check for vulnerabilities
+      continue-on-error: true
+      uses: snyk/actions/dotnet@master
       env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: |
-          curl "https://static.snyk.io/cli/latest/snyk-win.exe" -o snyk.exe
-          .\snyk auth "$SNYK_TOKEN"
-
-    - name: Run Snyk Open Source (SCA)
-      run: |
-          .\snyk.exe test
-
-    - name: Create Snyk Open Source (SCA) snapshot
-      run: |
-          .\snyk.exe monitor
+         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     - name: Dotnet build
       run: dotnet build --configuration Release --no-restore
